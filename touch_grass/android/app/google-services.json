@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "271582396183",
+    "project_id": "touch-grass-gt",
+    "storage_bucket": "touch-grass-gt.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271582396183:android:0f8db854c3d97da5c2c152",
+        "android_client_info": {
+          "package_name": "com.example.touch_grass"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZbMbrDpT6T8LTXjJ4XlzcIDGPYS1qij8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
