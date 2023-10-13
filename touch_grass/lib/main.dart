@@ -6,6 +6,7 @@ import 'package:json_theme/json_theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:touch_grass/components/FeedCard.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -146,7 +147,7 @@ class _NavigationExampleState extends State<NavigationExample> {
           ),
           NavigationDestination(
             icon: Icon(Icons.diversity_1_outlined),
-            label: 'Friends',
+            label: 'Feed',
           ),
         ],
       ),
@@ -155,11 +156,9 @@ class _NavigationExampleState extends State<NavigationExample> {
           alignment: Alignment.center,
           child: const Text('Page 1'),
         ),
-        Discover(),
-        Container(
-          color: Colors.blue,
-          alignment: Alignment.center,
-          child: const Text('Page 3'),
+        const Discover(),
+        ListView(
+          children: const [FeedCard(), FeedCard()],
         ),
       ][currentPageIndex],
     );
@@ -187,12 +186,14 @@ class _DiscoverState extends State<Discover> {
         } else if (snapshot.hasError) {
           return Text('Result: ${snapshot.error}');
         } else {
-          return const SizedBox(
-            width: 120,
-            height: 120,
-            child: SpinKitCubeGrid(
-              color: Color.fromRGBO(62, 106, 0, 1),
-              size: 100,
+          return const Center(
+            child: SizedBox(
+              width: 120,
+              height: 120,
+              child: SpinKitCubeGrid(
+                color: Color.fromRGBO(62, 106, 0, 1),
+                size: 100,
+              ),
             ),
           );
         }
