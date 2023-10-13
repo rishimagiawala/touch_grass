@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: lightTheme,
       darkTheme: darkTheme,
-      home: const LoginPage(),
+      home: const NavigationExample(),
     );
   }
 }
