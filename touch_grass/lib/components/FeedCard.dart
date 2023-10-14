@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,12 +11,14 @@ class FeedCard extends StatelessWidget {
       required this.picUrl,
       required this.timestamp,
       required this.location,
-      required this.postImgUrl});
+      required this.postImgUrl,
+      required this.imgPath});
   final String name;
   final String picUrl;
   final String timestamp;
   final String location;
   final String postImgUrl;
+  final String imgPath;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -55,9 +58,7 @@ class FeedCard extends StatelessWidget {
           padding: EdgeInsets.all(8.0),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: Image(
-              image: NetworkImage(postImgUrl),
-            ),
+            child: Image.file(File(imgPath)),
           ),
         )
       ]),
