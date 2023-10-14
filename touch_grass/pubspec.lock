@@ -96,7 +96,11 @@ packages:
       sha256: f092b211a4319e98e5ff58223576de6c2803db36221657b46c82574721240687
       url: "https://pub.dev"
     source: hosted
+<<<<<<< HEAD
     version: "1.17.2"
+=======
+    version: "1.17.0"
+>>>>>>> rishi
   convert:
     dependency: transitive
     description:
@@ -133,10 +137,17 @@ packages:
     dependency: transitive
     description:
       name: file
+<<<<<<< HEAD
       sha256: "5fc22d7c25582e38ad9a8515372cd9a93834027aacf1801cf01164dac0ffa08c"
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
+=======
+      sha256: "1b92bec4fc2a72f59a8e15af5f52cd441e4a7860b49499d69dfa817af20e925d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.4"
+>>>>>>> rishi
   firebase_auth:
     dependency: "direct main"
     description:
@@ -324,10 +335,17 @@ packages:
     dependency: transitive
     description:
       name: google_sign_in_web
+<<<<<<< HEAD
       sha256: "939e9172a378ec4eaeb7f71eeddac9b55ebd0e8546d336daec476a68e5279766"
       url: "https://pub.dev"
     source: hosted
     version: "0.12.0+5"
+=======
+      sha256: b48263e47f9493ba4120ccdfffe7412549ee297e82b97be9b8fa16ea8919ffbe
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.12.0+4"
+>>>>>>> rishi
   http:
     dependency: transitive
     description:
@@ -380,10 +398,10 @@ packages:
     dependency: "direct main"
     description:
       name: json_theme
-      sha256: b80982abebaccbaf922a2b495828b3fced547efd9b6e499419a06c3a56f97e30
+      sha256: c78d9b4985dbb1e24b345498ef786d12df91b17feebf8008beed72143d2fb88f
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.3+5"
+    version: "5.0.2+6"
   lints:
     dependency: transitive
     description:
@@ -423,7 +441,11 @@ packages:
       sha256: "3c74dbf8763d36539f114c799d8a2d87343b5067e9d796ca22b5eb8437090ee3"
       url: "https://pub.dev"
     source: hosted
+<<<<<<< HEAD
     version: "1.9.1"
+=======
+    version: "1.8.0"
+>>>>>>> rishi
   package_config:
     dependency: transitive
     description:
@@ -439,7 +461,11 @@ packages:
       sha256: "8829d8a55c13fc0e37127c29fedf290c102f4e40ae94ada574091fe0ff96c917"
       url: "https://pub.dev"
     source: hosted
+<<<<<<< HEAD
     version: "1.8.3"
+=======
+    version: "1.8.2"
+>>>>>>> rishi
   pigeon:
     dependency: transitive
     description:
@@ -569,6 +595,7 @@ packages:
     dependency: transitive
     description:
       name: watcher
+<<<<<<< HEAD
       sha256: "3d2ad6751b3c16cf07c7fca317a1413b3f26530319181b37e3b9039b84fc01d8"
       url: "https://pub.dev"
     source: hosted
@@ -581,6 +608,12 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.4-beta"
+=======
+      sha256: "6a7f46926b01ce81bfc339da6a7f20afbe7733eff9846f6d6a5466aa4c6667c0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
+>>>>>>> rishi
   yaml:
     dependency: transitive
     description:
@@ -598,5 +631,10 @@ packages:
     source: hosted
     version: "1.1.1"
 sdks:
+<<<<<<< HEAD
   dart: ">=3.1.0 <4.0.0"
   flutter: ">=3.13.0"
+=======
+  dart: ">=2.19.5 <3.0.0"
+  flutter: ">=3.7.0"
+>>>>>>> rishi

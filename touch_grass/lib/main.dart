@@ -15,6 +15,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<UserCredential> signInWithGoogle() async {
+<<<<<<< HEAD
+=======
+  print("This was called");
+>>>>>>> rishi
   // Trigger the authentication flow
   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -56,6 +60,9 @@ Future<UserCredential> signInWithGoogle() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   final lightThemeStr =
       await rootBundle.loadString('assets/appainter_light_theme.json');
   final lightThemeJson = jsonDecode(lightThemeStr);
@@ -82,8 +89,12 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: lightTheme,
       darkTheme: darkTheme,
+<<<<<<< HEAD
       home: LoginPage(),
       //home: const NavigationExample(),
+=======
+      home: const LoginPage(),
+>>>>>>> rishi
     );
   }
 }
@@ -136,7 +147,10 @@ class LoginPage extends StatelessWidget {
               height: 30,
             ),
             OutlinedButton.icon(
+<<<<<<< HEAD
                 //onPressed: () {},
+=======
+>>>>>>> rishi
                 onPressed: () async {
                   await signInWithGoogle();
                   // ignore: use_build_context_synchronously
@@ -216,7 +230,16 @@ class _NavigationExampleState extends State<NavigationExample> {
         ),
         const Discover(),
         ListView(
-          children: const [FeedCard(), FeedCard()],
+          children: const [
+            FeedCard(
+                name: 'Donald Glover',
+                picUrl:
+                    'https://th.bing.com/th/id/OIG.KjRSRH87v0JTie8aIPyW?pid=ImgGn',
+                timestamp: '8:00pm',
+                location: 'NYC',
+                postImgUrl:
+                    'https://th.bing.com/th/id/OIG.KjRSRH87v0JTie8aIPyW?pid=ImgGn')
+          ],
         ),
       ][currentPageIndex],
     );
