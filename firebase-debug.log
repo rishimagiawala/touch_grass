@@ -1,0 +1,21 @@
+[debug] [2023-10-13T22:17:52.249Z] ----------------------------------------------------------------------
+[debug] [2023-10-13T22:17:52.250Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\manav\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2023-10-13T22:17:52.251Z] CLI Version:   12.7.0
+[debug] [2023-10-13T22:17:52.251Z] Platform:      win32
+[debug] [2023-10-13T22:17:52.251Z] Node Version:  v18.13.0
+[debug] [2023-10-13T22:17:52.252Z] Time:          Fri Oct 13 2023 18:17:52 GMT-0400 (Eastern Daylight Time)
+[debug] [2023-10-13T22:17:52.252Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-10-13T22:17:52.258Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-10-13T22:17:52.259Z] > authorizing via signed-in user (manavinatl@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\manav\OneDrive\Desktop\HACKGT\touch_grass
+
