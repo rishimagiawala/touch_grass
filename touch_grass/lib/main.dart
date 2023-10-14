@@ -8,8 +8,58 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:touch_grass/components/FeedCard.dart';
 
+import 'firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+Future<UserCredential> signInWithGoogle() async {
+  print("This was called");
+  // Trigger the authentication flow
+  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+  // Obtain the auth details from the request
+  final GoogleSignInAuthentication? googleAuth =
+      await googleUser?.authentication;
+
+  // Create a new credential
+  final credential = GoogleAuthProvider.credential(
+    accessToken: googleAuth?.accessToken,
+    idToken: googleAuth?.idToken,
+  );
+
+  await FirebaseAuth.instance.signInWithCredential(credential);
+  if (FirebaseAuth.instance.currentUser != null) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.email)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        print('Document exists on the database');
+      } else {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.email)
+            .set({
+          'uid': FirebaseAuth.instance.currentUser?.uid,
+          'displayName': FirebaseAuth.instance.currentUser?.displayName,
+          'photoUrl': FirebaseAuth.instance.currentUser?.photoURL,
+          'drafts': []
+        });
+      }
+    });
+  }
+  // Once signed in, return the UserCredential
+  return FirebaseAuth.instance.signInWithCredential(credential);
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   final lightThemeStr =
       await rootBundle.loadString('assets/appainter_light_theme.json');
   final lightThemeJson = jsonDecode(lightThemeStr);
@@ -33,7 +83,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: lightTheme,
       darkTheme: darkTheme,
-      home: const NavigationExample(),
+      home: const LoginPage(),
     );
   }
 }
@@ -86,7 +136,14 @@ class LoginPage extends StatelessWidget {
               height: 30,
             ),
             OutlinedButton.icon(
-                onPressed: () {},
+                onPressed: () async {
+                  await signInWithGoogle();
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => const NavigationExample()),
+                      (Route route) => false);
+                },
                 icon: const FaIcon(FontAwesomeIcons.google),
                 style: OutlinedButton.styleFrom(
                     shape: RoundedRectangleBorder(
