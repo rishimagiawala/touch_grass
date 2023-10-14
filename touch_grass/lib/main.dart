@@ -15,10 +15,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<UserCredential> signInWithGoogle() async {
-<<<<<<< HEAD
-=======
   print("This was called");
->>>>>>> rishi
   // Trigger the authentication flow
   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -89,12 +86,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: lightTheme,
       darkTheme: darkTheme,
-<<<<<<< HEAD
-      home: LoginPage(),
-      //home: const NavigationExample(),
-=======
       home: const LoginPage(),
->>>>>>> rishi
     );
   }
 }
@@ -147,10 +139,6 @@ class LoginPage extends StatelessWidget {
               height: 30,
             ),
             OutlinedButton.icon(
-<<<<<<< HEAD
-                //onPressed: () {},
-=======
->>>>>>> rishi
                 onPressed: () async {
                   await signInWithGoogle();
                   // ignore: use_build_context_synchronously
