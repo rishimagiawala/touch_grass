@@ -43,6 +43,7 @@ dependencies:
   cloud_firestore: ^4.9.3
   google_sign_in: ^6.1.5
   firebase_auth: ^4.10.1
+  camera: ^0.10.5+5
   
 
 dev_dependencies:

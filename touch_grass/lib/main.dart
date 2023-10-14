@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:json_theme/json_theme.dart';
@@ -7,7 +8,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:touch_grass/components/FeedCard.dart';
+import 'package:touch_grass/components/TakePictureScreen.dart';
+import 'package:touch_grass/firebaseFunctions.dart';
 
+import 'components/Friends.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -46,7 +50,7 @@ Future<UserCredential> signInWithGoogle() async {
           'uid': FirebaseAuth.instance.currentUser?.uid,
           'displayName': FirebaseAuth.instance.currentUser?.displayName,
           'photoUrl': FirebaseAuth.instance.currentUser?.photoURL,
-          'drafts': []
+          'friends': []
         });
       }
     });
@@ -60,6 +64,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final cameras = await availableCameras();
+  final firstCamera = cameras.first;
+
   final lightThemeStr =
       await rootBundle.loadString('assets/appainter_light_theme.json');
   final lightThemeJson = jsonDecode(lightThemeStr);
@@ -71,13 +78,22 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp(lightTheme: lightTheme, darkTheme: darkTheme));
+  runApp(MyApp(
+    lightTheme: lightTheme,
+    darkTheme: darkTheme,
+    camera: firstCamera,
+  ));
 }
 
 class MyApp extends StatelessWidget {
   final ThemeData lightTheme;
   final ThemeData darkTheme;
-  const MyApp({super.key, required this.lightTheme, required this.darkTheme});
+  final CameraDescription camera;
+  const MyApp(
+      {super.key,
+      required this.lightTheme,
+      required this.darkTheme,
+      required this.camera});
 
   // This widget is the root of your application.
   @override
@@ -86,14 +102,14 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: lightTheme,
       darkTheme: darkTheme,
-      home: const LoginPage(),
+      home: LoginPage(camera: camera),
     );
   }
 }
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
-
+  const LoginPage({super.key, required this.camera});
+  final CameraDescription camera;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,7 +160,9 @@ class LoginPage extends StatelessWidget {
                   // ignore: use_build_context_synchronously
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
-                          builder: (context) => const NavigationExample()),
+                          builder: (context) => NavigationExample(
+                                camera: camera,
+                              )),
                       (Route route) => false);
                 },
                 icon: const FaIcon(FontAwesomeIcons.google),
@@ -168,7 +186,8 @@ class LoginPage extends StatelessWidget {
 }
 
 class NavigationExample extends StatefulWidget {
-  const NavigationExample({super.key});
+  final CameraDescription camera;
+  const NavigationExample({super.key, required this.camera});
 
   @override
   State<NavigationExample> createState() => _NavigationExampleState();
@@ -176,17 +195,46 @@ class NavigationExample extends StatefulWidget {
 
 class _NavigationExampleState extends State<NavigationExample> {
   int currentPageIndex = 0;
+  bool addingFriend = false;
 
   @override
   Widget build(BuildContext context) {
+    if (currentPageIndex != 1) {
+      setState(() {
+        addingFriend = false;
+      });
+    }
     return Scaffold(
-      floatingActionButton: currentPageIndex == 2
-          ? FloatingActionButton(
-              tooltip: 'Check us out on GitHub',
-              onPressed: () {},
-              child: const FaIcon(FontAwesomeIcons.github),
-            )
+      floatingActionButtonLocation: addingFriend == true
+          ? FloatingActionButtonLocation.centerFloat
           : null,
+      floatingActionButton: currentPageIndex == 3
+          ? FloatingActionButton(
+              tooltip: 'Create Post',
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        TakePictureScreen(camera: widget.camera),
+                  ),
+                );
+              },
+              child: const FaIcon(FontAwesomeIcons.camera),
+            )
+          : currentPageIndex == 1 && addingFriend == false
+              ? FloatingActionButton(
+                  tooltip: 'Add Friend',
+                  onPressed: () {
+                    print("This was printed");
+                    setState(() {
+                      addingFriend = true;
+                    });
+                  },
+                  child: const FaIcon(FontAwesomeIcons.userPlus),
+                )
+              : currentPageIndex == 1 && addingFriend == true
+                  ? AddFriend()
+                  : null,
       appBar: AppBar(
         title: Text(
           "Touch Grass",
@@ -209,6 +257,10 @@ class _NavigationExampleState extends State<NavigationExample> {
             label: 'Stats',
           ),
           NavigationDestination(
+            icon: Icon(Icons.group),
+            label: 'Friends',
+          ),
+          NavigationDestination(
             icon: Icon(Icons.travel_explore_outlined),
             label: 'Find Grass',
           ),
@@ -223,6 +275,7 @@ class _NavigationExampleState extends State<NavigationExample> {
           alignment: Alignment.center,
           child: const Text('Page 1'),
         ),
+        const Friends(),
         const Discover(),
         ListView(
           children: const [
@@ -325,4 +378,39 @@ Future<Position> _determinePosition() async {
   double lat = location.latitude;
 
   return await Geolocator.getCurrentPosition();
+}
+
+class AddFriend extends StatefulWidget {
+  const AddFriend({super.key});
+
+  @override
+  State<AddFriend> createState() => _AddFriendState();
+}
+
+class _AddFriendState extends State<AddFriend> {
+  String currentEmail = '';
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: TextField(
+          onChanged: (value) => {
+                setState(() {
+                  currentEmail = value;
+                })
+              },
+          decoration: InputDecoration(
+            fillColor: Theme.of(context).colorScheme.primaryContainer,
+            filled: true,
+            border: const OutlineInputBorder(),
+            hintText: 'Enter member email address',
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                addFriend(currentEmail);
+              },
+            ),
+          )),
+    );
+  }
 }
