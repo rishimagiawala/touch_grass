@@ -180,6 +180,13 @@ class _NavigationExampleState extends State<NavigationExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: currentPageIndex == 2
+          ? FloatingActionButton(
+              tooltip: 'Check us out on GitHub',
+              onPressed: () {},
+              child: const FaIcon(FontAwesomeIcons.github),
+            )
+          : null,
       appBar: AppBar(
         title: Text(
           "Touch Grass",
@@ -219,6 +226,14 @@ class _NavigationExampleState extends State<NavigationExample> {
         const Discover(),
         ListView(
           children: const [
+            FeedCard(
+                name: 'Donald Glover',
+                picUrl:
+                    'https://th.bing.com/th/id/OIG.KjRSRH87v0JTie8aIPyW?pid=ImgGn',
+                timestamp: '8:00pm',
+                location: 'NYC',
+                postImgUrl:
+                    'https://th.bing.com/th/id/OIG.KjRSRH87v0JTie8aIPyW?pid=ImgGn'),
             FeedCard(
                 name: 'Donald Glover',
                 picUrl:
