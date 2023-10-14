@@ -158,7 +158,16 @@ class _NavigationExampleState extends State<NavigationExample> {
         ),
         const Discover(),
         ListView(
-          children: const [FeedCard(), FeedCard()],
+          children: const [
+            FeedCard(
+                name: 'Donald Glover',
+                picUrl:
+                    'https://th.bing.com/th/id/OIG.KjRSRH87v0JTie8aIPyW?pid=ImgGn',
+                timestamp: '8:00pm',
+                location: 'NYC',
+                postImgUrl:
+                    'https://th.bing.com/th/id/OIG.KjRSRH87v0JTie8aIPyW?pid=ImgGn')
+          ],
         ),
       ][currentPageIndex],
     );
