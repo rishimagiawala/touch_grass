@@ -12,13 +12,16 @@ class FeedCard extends StatefulWidget {
       required this.timestamp,
       required this.location,
       required this.postImgUrl,
-      required this.grassPoints});
+      required this.grassPoints,
+      required this.photoUrl});
   final String name;
   final String picUrl;
   final String timestamp;
   final String location;
   final String postImgUrl;
   final String grassPoints;
+  final String photoUrl;
+  // final String photoUrl;
   @override
   State<FeedCard> createState() => _FeedCardState();
 }
@@ -53,7 +56,7 @@ class _FeedCardState extends State<FeedCard> {
               radius:
                   23, // This radius is the radius of the picture in the circle avatar itself.
               backgroundImage: NetworkImage(
-                widget.picUrl,
+                widget.photoUrl,
               ),
             ),
           ),
@@ -75,7 +78,7 @@ class _FeedCardState extends State<FeedCard> {
               icon: !liked
                   ? const Icon(
                       Icons.favorite_outline,
-                      color: Colors.red,
+                      color: Colors.green,
                       size: 40,
                     )
                   : const Icon(

@@ -135,6 +135,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+
         // Provide an onPressed callback.
         onPressed: () async {
           setState(() {

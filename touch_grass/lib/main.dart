@@ -62,7 +62,8 @@ Future<UserCredential> signInWithGoogle() async {
               'timestamp': Timestamp.now(),
               'location': 'HackGT',
               'numOfLikes': 0,
-              'grass_points': 1
+              'grass_points': 1,
+              'photoUrl': FirebaseAuth.instance.currentUser?.photoURL
             }
           ],
           'grassPoints': 1
@@ -114,6 +115,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: lightTheme,
       darkTheme: darkTheme,
@@ -225,6 +227,7 @@ class _NavigationExampleState extends State<NavigationExample> {
           : null,
       floatingActionButton: currentPageIndex == 3
           ? FloatingActionButton(
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
               tooltip: 'Create Post',
               onPressed: () {
                 Navigator.of(context).push(
@@ -238,6 +241,8 @@ class _NavigationExampleState extends State<NavigationExample> {
             )
           : currentPageIndex == 1 && addingFriend == false
               ? FloatingActionButton(
+                  backgroundColor:
+                      Theme.of(context).colorScheme.secondaryContainer,
                   tooltip: 'Add Friend',
                   onPressed: () {
                     setState(() {
@@ -267,12 +272,12 @@ class _NavigationExampleState extends State<NavigationExample> {
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(
-            icon: Icon(Icons.data_exploration_outlined),
-            label: 'Profile',
+            icon: const FaIcon(FontAwesomeIcons.leaf),
+            label: 'Grassblade',
           ),
           NavigationDestination(
             icon: Icon(Icons.group),
-            label: 'Friends',
+            label: 'My Garden',
           ),
           NavigationDestination(
             icon: Icon(Icons.travel_explore_outlined),
@@ -280,20 +285,55 @@ class _NavigationExampleState extends State<NavigationExample> {
           ),
           NavigationDestination(
             icon: Icon(Icons.diversity_1_outlined),
-            label: 'Feed',
+            label: 'My Lawn',
           ),
         ],
       ),
       body: <Widget>[
         Profile(email: email),
         const Friends(),
-        const Discover(),
+        GrassNearMe(),
         FeedScreen(
           profile: false,
           email: email,
         ),
       ][currentPageIndex],
     );
+  }
+}
+
+class GrassNearMe extends StatefulWidget {
+  const GrassNearMe({
+    super.key,
+  });
+
+  @override
+  State<GrassNearMe> createState() => _GrassNearMeState();
+}
+
+class _GrassNearMeState extends State<GrassNearMe> {
+  bool discoverTime = false;
+  @override
+  void initState() {
+    super.initState();
+    // here is the logic
+    Future.delayed(Duration(seconds: 2)).then((__) {
+      setState(() {
+        discoverTime = true;
+      });
+    });
+  }
+
+  Widget build(BuildContext context) {
+    return !discoverTime
+        ? Center(
+            child: SizedBox(
+              height: 100,
+              width: 100,
+              child: CircularProgressIndicator(),
+            ),
+          )
+        : Discover();
   }
 }
 
@@ -327,16 +367,6 @@ class Profile extends StatelessWidget {
           return SingleChildScrollView(
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: const [
-                    Icon(
-                      Icons.favorite_outline,
-                      color: Colors.red,
-                      size: 40,
-                    )
-                  ],
-                ),
                 Center(
                   child: CircleAvatar(
                     radius:
@@ -362,7 +392,7 @@ class Profile extends StatelessWidget {
                   height: 12,
                 ),
                 Text(
-                  "Touched Grass: $date",
+                  "Last Touched Grass: $date",
                   style: Theme.of(context)
                       .textTheme
                       .labelMedium
@@ -406,7 +436,7 @@ class Profile extends StatelessWidget {
                   endIndent: 20,
                 ),
                 Text(
-                  "Your Grassblade",
+                  "Lawn",
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(
@@ -422,7 +452,7 @@ class Profile extends StatelessWidget {
           //     "Full Name: ${data['displayName']} ${data['displayName']}");
         }
 
-        return Text("loading");
+        return CircularProgressIndicator();
       },
     );
   }
@@ -462,16 +492,20 @@ class _FeedScreenState extends State<FeedScreen> {
             var postList = snapshot.data!;
 
             return ListView(
+              physics:
+                  widget.profile ? const NeverScrollableScrollPhysics() : null,
               shrinkWrap: true,
               children: [
                 for (var post in postList)
                   FeedCard(
-                      grassPoints: post['grass_points'].toString(),
-                      name: post['name'],
-                      picUrl: post['imgUrl'],
-                      timestamp: readTimestamp(post['timestamp'].seconds),
-                      location: post['location'],
-                      postImgUrl: post['imgUrl'])
+                    grassPoints: post['grass_points'].toString(),
+                    name: post['name'],
+                    picUrl: post['imgUrl'],
+                    timestamp: readTimestamp(post['timestamp'].seconds),
+                    location: post['location'],
+                    postImgUrl: post['imgUrl'],
+                    photoUrl: post['photoUrl'],
+                  )
               ],
             );
           } else if (snapshot.hasError) {
@@ -529,13 +563,11 @@ class _DiscoverState extends State<Discover> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Location List'),
-      ),
       body: ListView.builder(
         itemCount: locations.length,
         itemBuilder: (context, index) {
           return Card(
+            color: Theme.of(context).colorScheme.primaryContainer,
             margin: EdgeInsets.all(10),
             child: ListTile(
               title: Text(locations[index].name),

@@ -49,6 +49,7 @@ Future<bool> addPost(String imgUrl, DateTime lm) async {
       .update({
     'posts': FieldValue.arrayUnion([
       {
+        'photoUrl': FirebaseAuth.instance.currentUser!.photoURL,
         'imgUrl': imgUrl,
         'name': FirebaseAuth.instance.currentUser!.displayName,
         'timestamp': lm,
@@ -66,6 +67,7 @@ Future<bool> addPost(String imgUrl, DateTime lm) async {
     'grassPoints': FieldValue.increment(cvScore['matching_count']),
     'posts': FieldValue.arrayUnion([
       {
+        'photoUrl': FirebaseAuth.instance.currentUser!.photoURL,
         'imgUrl': imgUrl,
         'name': FirebaseAuth.instance.currentUser!.displayName,
         'timestamp': lm,

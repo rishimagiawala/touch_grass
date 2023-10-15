@@ -137,7 +137,13 @@ class FriendListCard extends StatelessWidget {
           //     "Full Name: ${data['displayName']} ${data['displayName']}");
         }
 
-        return Text("loading");
+        return const Center(
+          child: SizedBox(
+            height: 100,
+            width: 100,
+            child: CircularProgressIndicator(),
+          ),
+        );
       },
     );
   }
