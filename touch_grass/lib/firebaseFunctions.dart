@@ -69,7 +69,7 @@ Future<List> getFeed() async {
   }
 
   posts
-      .sort((a, b) => a['timestamp'].seconds.compareTo(b['timestamp'].seconds));
+      .sort((a, b) => b['timestamp'].seconds.compareTo(a['timestamp'].seconds));
 
   return posts;
 }
