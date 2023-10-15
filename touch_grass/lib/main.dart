@@ -18,6 +18,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+late double long;
+late double lat;
+
 Future<UserCredential> signInWithGoogle() async {
   print("This was called");
   // Trigger the authentication flow
@@ -496,28 +499,68 @@ class Discover extends StatefulWidget {
 
 class _DiscoverState extends State<Discover> {
   final Future<Position> _position = _determinePosition();
+  List<LocationData> locations = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    final String response = await rootBundle.loadString('assets/db.json');
+    final List<dynamic> data = await json.decode(response);
+
+    //final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
+    //print(response.body);
+    // if (response.statusCode == 200) {
+    //  = json.decode(stuff);
+    //final Map<String, dynamic> data = json.decode(response.body);
+    setState(() {
+      locations =
+          data.map((location) => LocationData.fromJson(location)).toList();
+      //locations = data.values.toList().where((location) => location is Map<String, dynamic>).map((location) => LocationData.fromJson(location)).toList();
+    });
+    // } else {
+    //   throw Exception('Failed to load data');
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Position>(
-      future: _position,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Text('Result: ${snapshot.data}');
-        } else if (snapshot.hasError) {
-          return Text('Result: ${snapshot.error}');
-        } else {
-          return const Center(
-            child: SizedBox(
-              width: 120,
-              height: 120,
-              child: SpinKitCubeGrid(
-                color: Color.fromRGBO(62, 106, 0, 1),
-                size: 100,
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Location List'),
+      ),
+      body: ListView.builder(
+        itemCount: locations.length,
+        itemBuilder: (context, index) {
+          return Card(
+            margin: EdgeInsets.all(10),
+            child: ListTile(
+              title: Text(locations[index].name),
+              subtitle: Text('Distance: ${locations[index].distance} miles'),
             ),
           );
-        }
-      },
+        },
+      ),
+    );
+  }
+}
+
+class LocationData {
+  final String name;
+  final double distance;
+
+  LocationData({
+    required this.name,
+    required this.distance,
+  });
+
+  factory LocationData.fromJson(Map<String, dynamic> json) {
+    return LocationData(
+      name: json['Location'],
+      distance: json['Distance'].toDouble(),
     );
   }
 }
@@ -557,8 +600,8 @@ Future<Position> _determinePosition() async {
   // When we reach here, permissions are granted and we can
   // continue accessing the position of the device.
   Position location = await Geolocator.getCurrentPosition();
-  double long = location.longitude;
-  double lat = location.latitude;
+  long = location.longitude;
+  lat = location.latitude;
 
   return await Geolocator.getCurrentPosition();
 }

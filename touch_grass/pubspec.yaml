@@ -78,6 +78,7 @@ flutter:
     - assets/appainter_light_theme.json
     - assets/appainter_dark_theme.json
     - assets/images/logo.jpg
+    - assets/db.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
