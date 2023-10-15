@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class FeedCard extends StatelessWidget {
+class FeedCard extends StatefulWidget {
   const FeedCard(
       {super.key,
       required this.name,
@@ -16,10 +17,17 @@ class FeedCard extends StatelessWidget {
   final String timestamp;
   final String location;
   final String postImgUrl;
+
+  @override
+  State<FeedCard> createState() => _FeedCardState();
+}
+
+class _FeedCardState extends State<FeedCard> {
+  bool liked = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsetsDirectional.only(bottom: 3),
       margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -44,22 +52,36 @@ class FeedCard extends StatelessWidget {
               radius:
                   23, // This radius is the radius of the picture in the circle avatar itself.
               backgroundImage: NetworkImage(
-                picUrl,
+                widget.picUrl,
               ),
             ),
           ),
-          title: Text(name),
-          subtitle: Text('$timestamp @ $location'),
+          title: Text(widget.name),
+          subtitle: Text('${widget.timestamp} @ ${widget.location}'),
         ),
-        Padding(
-          padding: EdgeInsets.all(8.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image(
-              image: NetworkImage(postImgUrl),
-            ),
-          ),
-        )
+        Image(
+          fit: BoxFit.fitWidth,
+          image: NetworkImage(widget.postImgUrl),
+        ),
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  liked = !liked;
+                });
+              },
+              icon: !liked
+                  ? const Icon(
+                      Icons.favorite_outline,
+                      color: Colors.red,
+                      size: 40,
+                    )
+                  : const Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 40,
+                    )),
+        ])
       ]),
     );
   }

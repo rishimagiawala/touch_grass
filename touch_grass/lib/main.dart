@@ -50,7 +50,8 @@ Future<UserCredential> signInWithGoogle() async {
           'uid': FirebaseAuth.instance.currentUser?.uid,
           'displayName': FirebaseAuth.instance.currentUser?.displayName,
           'photoUrl': FirebaseAuth.instance.currentUser?.photoURL,
-          'friends': []
+          'friends': [],
+          'posts': []
         });
       }
     });
@@ -277,28 +278,61 @@ class _NavigationExampleState extends State<NavigationExample> {
         ),
         const Friends(),
         const Discover(),
-        ListView(
-          children: const [
-            FeedCard(
-                name: 'Donald Glover',
-                picUrl:
-                    'https://th.bing.com/th/id/OIG.KjRSRH87v0JTie8aIPyW?pid=ImgGn',
-                timestamp: '8:00pm',
-                location: 'NYC',
-                postImgUrl:
-                    'https://th.bing.com/th/id/OIG.KjRSRH87v0JTie8aIPyW?pid=ImgGn'),
-            FeedCard(
-                name: 'Donald Glover',
-                picUrl:
-                    'https://th.bing.com/th/id/OIG.KjRSRH87v0JTie8aIPyW?pid=ImgGn',
-                timestamp: '8:00pm',
-                location: 'NYC',
-                postImgUrl:
-                    'https://th.bing.com/th/id/OIG.KjRSRH87v0JTie8aIPyW?pid=ImgGn')
-          ],
-        ),
+        FeedScreen(),
       ][currentPageIndex],
     );
+  }
+}
+
+class FeedScreen extends StatefulWidget {
+  const FeedScreen({
+    super.key,
+  });
+
+  @override
+  State<FeedScreen> createState() => _FeedScreenState();
+}
+
+class _FeedScreenState extends State<FeedScreen> {
+  late Future<List> posts;
+  @override
+  void initState() {
+    super.initState();
+    posts = getFeed();
+  }
+
+  Widget build(BuildContext context) {
+    getFeed();
+
+    return FutureBuilder<List>(
+        future: posts,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var postList = snapshot.data!;
+            print(snapshot.data!);
+
+            return ListView(
+              children: [
+                for (var post in postList)
+                  FeedCard(
+                      name: post['name'],
+                      picUrl: post['imgUrl'],
+                      timestamp: readTimestamp(post['timestamp'].seconds),
+                      location: post['location'],
+                      postImgUrl: post['imgUrl'])
+              ],
+            );
+          } else if (snapshot.hasError) {
+            return Text('${snapshot.error}');
+          }
+
+          // By default, show a loading spinner.
+          return Center(
+              child: Container(
+                  height: 100,
+                  width: 100,
+                  child: const CircularProgressIndicator()));
+        });
   }
 }
 
