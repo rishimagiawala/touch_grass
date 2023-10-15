@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -27,12 +28,22 @@ Future<bool> addFriend(String email) async {
 }
 
 Future<bool> addPost(String imgUrl, DateTime lm) async {
-  var cvScore = await http.get(Uri.parse(
-      'https://45ubn2ipoy2owbf7ykfio2yafe0thbkb.lambda-url.us-east-2.on.aws/?${imgUrl}'));
+  String awsUrl =
+      '45ubn2ipoy2owbf7ykfio2yafe0thbkb.lambda-url.us-east-2.on.aws';
 
-  print(cvScore.body);
+  final queryParameters = {
+    'url': imgUrl,
+    'param2': 'two',
+  };
+  final uri = Uri.https(awsUrl, '', queryParameters);
+  final response = await http.get(uri, headers: {
+    HttpHeaders.contentTypeHeader: 'application/json',
+  });
 
-  FirebaseFirestore.instance
+  final cvScore = json.decode(response.body);
+  print(cvScore['matching_count']);
+
+  await FirebaseFirestore.instance
       .collection('users')
       .doc(FirebaseAuth.instance.currentUser!.email)
       .update({
@@ -42,7 +53,25 @@ Future<bool> addPost(String imgUrl, DateTime lm) async {
         'name': FirebaseAuth.instance.currentUser!.displayName,
         'timestamp': lm,
         'location': 'Georgia Tech',
-        'numOfLikes': 0
+        'numOfLikes': 0,
+        'grass_points': cvScore['matching_count']
+      }
+    ])
+  });
+
+  await FirebaseFirestore.instance
+      .collection('users')
+      .doc(FirebaseAuth.instance.currentUser!.email)
+      .update({
+    'grassPoints': FieldValue.increment(cvScore['matching_count']),
+    'posts': FieldValue.arrayUnion([
+      {
+        'imgUrl': imgUrl,
+        'name': FirebaseAuth.instance.currentUser!.displayName,
+        'timestamp': lm,
+        'location': 'Georgia Tech',
+        'numOfLikes': 0,
+        'grass_points': cvScore['matching_count']
       }
     ])
   });

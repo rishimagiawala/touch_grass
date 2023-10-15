@@ -11,13 +11,14 @@ class FeedCard extends StatefulWidget {
       required this.picUrl,
       required this.timestamp,
       required this.location,
-      required this.postImgUrl});
+      required this.postImgUrl,
+      required this.grassPoints});
   final String name;
   final String picUrl;
   final String timestamp;
   final String location;
   final String postImgUrl;
-
+  final String grassPoints;
   @override
   State<FeedCard> createState() => _FeedCardState();
 }
@@ -58,6 +59,7 @@ class _FeedCardState extends State<FeedCard> {
           ),
           title: Text(widget.name),
           subtitle: Text('${widget.timestamp} @ ${widget.location}'),
+          trailing: Text('+ ${widget.grassPoints} Grass Points'),
         ),
         Image(
           fit: BoxFit.fitWidth,

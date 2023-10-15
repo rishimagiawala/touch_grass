@@ -51,7 +51,18 @@ Future<UserCredential> signInWithGoogle() async {
           'displayName': FirebaseAuth.instance.currentUser?.displayName,
           'photoUrl': FirebaseAuth.instance.currentUser?.photoURL,
           'friends': [],
-          'posts': []
+          'posts': [
+            {
+              'imgUrl':
+                  'https://th.bing.com/th/id/OIG.s7C78UUTe0gbPGRH2UdB?pid=ImgGn',
+              'name': 'Welcome to Touch Grass',
+              'timestamp': Timestamp.now(),
+              'location': 'HackGT',
+              'numOfLikes': 0,
+              'grass_points': 1
+            }
+          ],
+          'grassPoints': 1
         });
       }
     });
@@ -226,7 +237,6 @@ class _NavigationExampleState extends State<NavigationExample> {
               ? FloatingActionButton(
                   tooltip: 'Add Friend',
                   onPressed: () {
-                    print("This was printed");
                     setState(() {
                       addingFriend = true;
                     });
@@ -255,7 +265,7 @@ class _NavigationExampleState extends State<NavigationExample> {
         destinations: const <Widget>[
           NavigationDestination(
             icon: Icon(Icons.data_exploration_outlined),
-            label: 'Stats',
+            label: 'Profile',
           ),
           NavigationDestination(
             icon: Icon(Icons.group),
@@ -362,11 +372,11 @@ class Profile extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          "87",
+                          "${data['grassPoints']}",
                           style: Theme.of(context).textTheme.headlineMedium,
                         ),
                         Text(
-                          "Grass Rating",
+                          "Grass Points",
                           style: Theme.of(context).textTheme.titleSmall,
                         )
                       ],
@@ -447,13 +457,13 @@ class _FeedScreenState extends State<FeedScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var postList = snapshot.data!;
-            print(snapshot.data!);
 
             return ListView(
               shrinkWrap: true,
               children: [
                 for (var post in postList)
                   FeedCard(
+                      grassPoints: post['grass_points'].toString(),
                       name: post['name'],
                       picUrl: post['imgUrl'],
                       timestamp: readTimestamp(post['timestamp'].seconds),
