@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:touch_grass/main.dart';
 
 class Friends extends StatefulWidget {
   const Friends({
@@ -94,6 +95,27 @@ class FriendListCard extends StatelessWidget {
               ],
             ),
             child: ListTile(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                          appBar: AppBar(
+                            title: Text(
+                              "Touch Grass",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                      fontFamily: "Pacifico",
+                                      color:
+                                          const Color.fromRGBO(62, 106, 0, 1)),
+                            ),
+                            centerTitle: true,
+                          ),
+                          body: Profile(
+                            email: friend,
+                          ),
+                        )));
+              },
               leading: CircleAvatar(
                 radius:
                     25, // Change this radius for the width of the circular border

@@ -197,7 +197,7 @@ class NavigationExample extends StatefulWidget {
 class _NavigationExampleState extends State<NavigationExample> {
   int currentPageIndex = 0;
   bool addingFriend = false;
-
+  String? email = FirebaseAuth.instance.currentUser!.email;
   @override
   Widget build(BuildContext context) {
     if (currentPageIndex != 1) {
@@ -272,14 +272,145 @@ class _NavigationExampleState extends State<NavigationExample> {
         ],
       ),
       body: <Widget>[
-        Container(
-          alignment: Alignment.center,
-          child: const Text('Page 1'),
-        ),
+        Profile(email: email),
         const Friends(),
         const Discover(),
-        FeedScreen(),
+        FeedScreen(
+          profile: false,
+          email: email,
+        ),
       ][currentPageIndex],
+    );
+  }
+}
+
+class Profile extends StatelessWidget {
+  final String? email;
+  Profile({
+    super.key,
+    required this.email,
+  });
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<DocumentSnapshot>(
+      future: users.doc(email).get(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text("Something went wrong");
+        }
+
+        if (snapshot.hasData && !snapshot.data!.exists) {
+          return Text("Document does not exist");
+        }
+
+        if (snapshot.connectionState == ConnectionState.done) {
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
+          String date = readTimestamp(
+              data['posts'][data['posts'].length - 1]['timestamp'].seconds);
+          String name = data['displayName'].replaceAll(' ', '');
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: const [
+                    Icon(
+                      Icons.favorite_outline,
+                      color: Colors.red,
+                      size: 40,
+                    )
+                  ],
+                ),
+                Center(
+                  child: CircleAvatar(
+                    radius:
+                        70, // Change this radius for the width of the circular border
+                    backgroundColor: Colors.white,
+                    child: CircleAvatar(
+                      radius:
+                          80, // This radius is the radius of the picture in the circle avatar itself.
+                      backgroundImage: NetworkImage(
+                        data['photoUrl'],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Text(
+                  "@$name",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Text(
+                  "Touched Grass: $date",
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelMedium
+                      ?.copyWith(color: Color.fromRGBO(87, 98, 73, 1)),
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          "87",
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        Text(
+                          "Grass Rating",
+                          style: Theme.of(context).textTheme.titleSmall,
+                        )
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Text(
+                          "${data['friends'].length}",
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        Text(
+                          "Total Friends",
+                          style: Theme.of(context).textTheme.titleSmall,
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
+                const Divider(
+                  indent: 20,
+                  endIndent: 20,
+                ),
+                Text(
+                  "Your Grassblade",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Text("Recent Posts"),
+                FeedScreen(profile: true, email: email)
+              ],
+            ),
+          );
+          //
+          // Text(
+          //     "Full Name: ${data['displayName']} ${data['displayName']}");
+        }
+
+        return Text("loading");
+      },
     );
   }
 }
@@ -287,8 +418,11 @@ class _NavigationExampleState extends State<NavigationExample> {
 class FeedScreen extends StatefulWidget {
   const FeedScreen({
     super.key,
+    required this.profile,
+    required this.email,
   });
-
+  final bool profile;
+  final String? email;
   @override
   State<FeedScreen> createState() => _FeedScreenState();
 }
@@ -298,7 +432,11 @@ class _FeedScreenState extends State<FeedScreen> {
   @override
   void initState() {
     super.initState();
-    posts = getFeed();
+    if (widget.profile == false) {
+      posts = getFeed();
+    } else {
+      posts = getProfileFeed(widget.email);
+    }
   }
 
   Widget build(BuildContext context) {
@@ -312,6 +450,7 @@ class _FeedScreenState extends State<FeedScreen> {
             print(snapshot.data!);
 
             return ListView(
+              shrinkWrap: true,
               children: [
                 for (var post in postList)
                   FeedCard(
